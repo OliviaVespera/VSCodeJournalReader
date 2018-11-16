@@ -1,0 +1,220 @@
+#:kivy 1.10.1
+#:import ThemeManager kivymd.theming.ThemeManager
+#:import sm kivy.uix.screenmanager
+##:import NavigationLayout kivymd.navigationdrawer.NavigationLayout
+
+<ImageButton>:
+	size_hint: (None, None)
+	size: (dp(50), dp(50))
+	padding: dp(2)
+	theme_text_color: 'Primary'
+    Image:
+        color: 
+        source: root.source
+        size_hint: 1, None
+        height: int(root.width/self.image_ratio)
+
+<MissionText>:
+    size_hint: None, None
+    size: self.texture_size
+    
+    markup: True
+    padding_x: 20
+    halign: "left"
+
+<MissionDetails>:
+    orientation: "vertical"
+    size: self.parent.size
+    pos: self.parent.pos
+    mission_image:mission_image
+    accept_button: accept_button
+    Toolbar:
+        id: toolbar
+        title: root.title #'Hunt for Maria Straussberg'
+        md_bg_color: app.theme_cls.primary_color
+        background_palette: 'Primary'
+        background_hue: '500'
+        left_action_items: [['menu', lambda x: self.parent.parent.parent.parent.toggle_nav_drawer()]]
+        right_action_items: [['close-circle', app.get_running_app().stop]]
+    Image:
+        source: root.image_source#"The beach_result.png"
+        size_hint: 1, None
+        id: mission_image
+        height: int(root.width/self.image_ratio)
+        # VideoPlayer:
+        #     source: "FrontEnd1.webm"
+        #     state: "play"
+        #     options:{"allow_stretch": True,'eos': 'loop'}
+        #     pos: self.parent.pos
+        #     size: self.parent.size
+        #     #thumbnail: "The beach_result.png"
+    MissionText:
+        font_size: 20
+        text: "Here is the mission"
+    MissionText:
+        text: root.description
+        text_size: root.width, None
+    MissionText:
+        font_size: 20
+        text: "[b]Reward[/b]"
+    MissionText:
+        padding_x: 60
+        text: "1. go to 9 Aurigae\n2. scan nav beacon\n3. find out from there"
+    BoxLayout:
+        padding: 0, 0, 50, 0
+        size_hint_y: None
+        height: accept_button.height
+        orientation: "horizontal"
+    
+        Widget:
+            
+        AcceptButton:
+            id: accept_button
+            md_bg_color: app.theme_cls.accent_dark
+            background_color_down: app.theme_cls.accent_dark
+            text: "Accept Mission"
+            #on_touch_up: root.accept_mission()
+            #on_disabled: self._update_color()
+    Widget:
+        # canvas:
+        #     Color:
+        #         rgba: [1, 0, 1, 0.1]
+        #     Rectangle:
+        #         pos: self.pos
+        #         size: self.size
+<MainLayout>:
+    orientation: "horizontal"
+    mission_details: mission_details
+    BoxLayout:
+        size_hint_x: None
+        width: 50
+        padding: 0, 30, 0, 0
+        orientation: "vertical"
+        canvas:
+            Color:
+                rgba: [0.15,0.15,0.15, 1]
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        ImageButton:
+            source: "triangle.png"
+            on_press: scr_mngr.current = "missions"
+        ImageButton:
+            source: "circle.png"
+            on_press: scr_mngr.current = "builder"
+        ImageButton:
+            source: "courier-planet.png"
+            on_press: scr_mngr.current = "profile"
+        ImageButton:
+            source: "courier-planet.png"
+            on_press: scr_mngr.current = "settings"
+        Widget:
+    ScreenManager:
+        
+        id: scr_mngr
+        transition: sm.CardTransition(direction="right")
+        Screen:
+            name: "missions"
+            MissionNavigation:
+                #side_panel_init_offset: 0.95
+                pos: root.ids.mission_details_scroller.pos
+                id: nav_layout
+                mission_details: mission_details
+                
+
+                ScrollView:
+                    id: mission_details_scroller
+                    # size_hint: 1, None
+                    # size:   Window.width, Window.height
+                    MissionDetails:
+                        #size_hint_y: None
+                        height: self.minimum_height
+                        id: mission_details
+
+        Screen:
+            name: "builder"
+            canvas:
+                Color:
+                    rgba: [1,0,0, 1]
+                Rectangle:
+                    size: self.size
+                    # root.ids.mission_details_scroller.pos
+            BoxLayout:
+                EditorSidePanel:
+                EditorMainPanel:
+
+        Screen:
+            name: "bgs"
+            canvas:
+                Color:
+                    rgba: [0, 0, 1, 1]
+                Rectangle:
+                    size: self.size
+                    #pos: root.ids.mission_details_scroller.pos
+        Screen:
+            name: "profile"
+            canvas:
+                Color:
+                    rgba: [0, 1, 0, 1]
+                Rectangle:
+                    size: self.size
+                    #pos: self.posroot.ids.mission_details_scroller.pos
+        Screen:
+            name: "settings"
+            canvas:
+                Color:
+                    rgba: [0, 1, 1, 1]
+                Rectangle:
+                    size: self.size
+<MissionNavigation>:
+    #side_panel_init_offset: 0.95
+    side_panel_width: dp(250)
+    #side_panel_positioning: "bottom"
+    MDNavigationDrawer:
+        id: nav_drawer
+        width: 10
+        nav_width: 10
+        NavigationDrawerToolbar:
+            title: "Missions"
+        
+        # NavigationDrawerIconButton:
+        #     icon: 'checkbox-blank-circle'
+        #     text: app.core.mission.missions[0].title
+        #     on_release: root.mission_details.update_mission_details(0)
+<MissionOption>:
+    on_release: self.parent.parent.parent.parent.parent.mission_details.update_mission_details(self.mission_uid)
+<StatusBar>:
+    size_hint: 1, None
+    height: 20
+    canvas:
+        Color:
+            rgba: 0.07, 0.07, 0.08, 1
+        Rectangle:
+            size:self.size
+            pos: self.pos
+
+<WindowMover>:
+    size_hint_y:None
+    height: 15
+    canvas:
+        Color:
+            rgba: [0.2,0.2,0.2, 0.2]
+        Rectangle:
+            size: self.size
+            pos: self.pos
+
+<WindowLayout>:
+    main_layout: main_layout
+    size: Window.size
+    WindowMover:
+        pos: 0, Window.height - self.height
+
+    BoxLayout:
+        
+        id: main_box
+        pos: 0,0
+        orientation:"vertical"
+        MainLayout:
+            id: main_layout
+        StatusBar:
+    

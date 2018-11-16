@@ -1,0 +1,8 @@
+things to do:
+    write player.missions
+    write player.inventory
+    write GUI in QTPY
+    write Travel(Mission)
+    write Visit(Mission)
+    write FactionMission(Mission)
+    write SellExplorationData(Mission)
